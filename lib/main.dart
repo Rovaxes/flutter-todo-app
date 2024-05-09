@@ -2,40 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smartlook/flutter_smartlook.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  // This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  final Smartlook smartlook = Smartlook.instance;
+  @override
+  void initState() {
+    super.initState();
+    smartlook.start();
+    smartlook.preferences.setProjectKey('d3cb21103c0c5ec804a165caecf655d4b9b15548');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return SmartlookRecordingWidget(
+      child: MaterialApp(
+        title: 'Flutter App',
+        home: MyHomePage(title: 'To Do App',),
+    	)
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key, required this.title});
@@ -55,12 +49,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Smartlook smartlook = Smartlook.instance;
   int _counter = 0;
 
   void _incrementCounter() {
-    smartlook.start();
-    smartlook.preferences.setProjectKey('d3cb21103c0c5ec804a165caecf655d4b9b15548');
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below

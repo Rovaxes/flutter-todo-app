@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smartlook/flutter_smartlook.dart';
+import 'package:today_design_system/today_library.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,20 +17,21 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     smartlook.start();
-    smartlook.preferences.setProjectKey('d3cb21103c0c5ec804a165caecf655d4b9b15548');
+    smartlook.preferences
+        .setProjectKey('d3cb21103c0c5ec804a165caecf655d4b9b15548');
   }
 
   @override
   Widget build(BuildContext context) {
     return SmartlookRecordingWidget(
-      child: MaterialApp(
-        title: 'Flutter App',
-        home: MyHomePage(title: 'To Do App',),
-    	)
-    );
+        child: MaterialApp(
+      title: 'Flutter App',
+      home: MyHomePage(
+        title: 'To Do App',
+      ),
+    ));
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key, required this.title});
@@ -106,6 +108,21 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            TodayButton(
+              label: "Test Modal",
+              onPressed: () {
+                TodayModal(
+                    title: "Test Modal",
+                    style: TodayModalStyle.card,
+                    content: Column(
+                      children: [
+                        TodayText("Helloo"),
+                        TodayInput(),
+                        TodayText("End of File"),
+                      ],
+                    )).show(context);
+              },
+            )
           ],
         ),
       ),

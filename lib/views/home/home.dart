@@ -138,71 +138,65 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       ]))
                 ]))));
 
-    Widget mission(MissionModel mission, int index) => Material(
-        child: InkWell(
-            onTap: () {
-              Provider.of<MissionModel>(context, listen: false)
-                  .setMission(mission);
-              _animationController.stop();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TaskDetails(index: index)),
-              );
-            },
-            onTapDown: (a) {
-              _animationController.animateBack(0);
-              //_animationController.stop();
-            },
-            onTapUp: (a) {
-              _animationController.repeat(reverse: true);
-              _animationController.reset();
-            },
-            child: Card(
-                key: UniqueKey(),
-                surfaceTintColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), // if you need this
-                  side: BorderSide(
-                    color: getCardColor(mission.missionType),
-                    width: 1,
-                  ),
-                ),
-                child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 16),
-                    child: Row(
-                      children: [
-                        MaxWidthBox(
-                            maxWidth: 200,
-                            child: AppText(
-                              text: mission.missionName,
-                              textStyle: textTheme.titleMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                              maxLines: 4,
-                            )),
-                        const Spacer(),
-                        Chip(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(8), // if you need this
-                            side: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                          ),
-                          label: AppText(
-                              text: "+${mission.expierence} exp",
-                              textStyle: textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary)),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                        )
-                      ],
-                    )))));
+    Widget mission(MissionModel mission, int index) => InkWell(
+        onTap: () {
+          Provider.of<MissionModel>(context, listen: false).setMission(mission);
+          _animationController.stop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TaskDetails(index: index)),
+          );
+        },
+        onTapDown: (a) {
+          _animationController.animateBack(0);
+        },
+        onTapUp: (a) {
+          _animationController.repeat(reverse: true);
+          _animationController.reset();
+        },
+        child: Card(
+            key: UniqueKey(),
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // if you need this
+              side: BorderSide(
+                color: getCardColor(mission.missionType),
+                width: 1,
+              ),
+            ),
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: Row(
+                  children: [
+                    MaxWidthBox(
+                        maxWidth: 200,
+                        child: AppText(
+                          text: mission.missionName,
+                          textStyle: textTheme.titleMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                          maxLines: 4,
+                        )),
+                    const Spacer(),
+                    Chip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8), // if you need this
+                        side: const BorderSide(
+                          color: Colors.transparent,
+                          width: 1,
+                        ),
+                      ),
+                      label: AppText(
+                          text: "+${mission.expierence} exp",
+                          textStyle: textTheme.titleMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).colorScheme.onSecondary)),
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    )
+                  ],
+                ))));
 
     Widget missions = Consumer<MissionsModel>(
         builder: (context, missions, child) => Column(
@@ -386,53 +380,54 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ]));
 
     return Scaffold(
-      body: Stack(children: [
-        Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [
-                  0.5,
-                  1
-                ],
-                    colors: [
-                  Theme.of(context).colorScheme.background.withOpacity(0.2),
-                  Theme.of(context).colorScheme.secondary.withOpacity(0.2)
-                ])),
-            child: Center(
-                child: MaxWidthBox(
-                    maxWidth: 400,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 12),
-                      child: Column(children: [
-                        const SizedBox(height: 24),
-                        header,
-                        const SizedBox(height: 24),
-                        level,
-                        const SizedBox(height: 24),
-                        missions
-                      ]),
-                    )))),
-        Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirection: 3.14 / 2,
-              emissionFrequency: 0.2,
-              numberOfParticles: 20,
-              blastDirectionality: BlastDirectionality.explosive,
-              gravity: 0.1,
-              colors: const [
-                AppColors.tertirary,
-                AppColors.white,
-                AppColors.regular,
-                AppColors.secondary,
-                AppColors.daily
+      body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [
+                0.5,
+                1
               ],
-            )),
-      ]),
+                  colors: [
+                Theme.of(context).colorScheme.background.withOpacity(0.2),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.2)
+              ])),
+          child: Stack(children: [
+            SingleChildScrollView(
+                child: Center(
+                    child: MaxWidthBox(
+                        maxWidth: 400,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 12),
+                          child: Column(children: [
+                            const SizedBox(height: 24),
+                            header,
+                            const SizedBox(height: 24),
+                            level,
+                            const SizedBox(height: 24),
+                            missions
+                          ]),
+                        )))),
+            Align(
+                alignment: Alignment.topCenter,
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirection: 3.14 / 2,
+                  emissionFrequency: 0.2,
+                  numberOfParticles: 20,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  gravity: 0.1,
+                  colors: const [
+                    AppColors.tertirary,
+                    AppColors.white,
+                    AppColors.regular,
+                    AppColors.secondary,
+                    AppColors.daily
+                  ],
+                )),
+          ])),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           GoRouter.of(context).pushReplacementNamed('create-task');

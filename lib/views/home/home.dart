@@ -155,7 +155,6 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
               //_animationController.stop();
             },
             onTapUp: (a) {
-              print("hi");
               _animationController.repeat(reverse: true);
               _animationController.reset();
             },

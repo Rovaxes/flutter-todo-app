@@ -8,16 +8,25 @@ import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/providers/account_model.dart';
 import 'package:todo_app/providers/mission_model.dart';
 import 'package:todo_app/providers/missions_model.dart';
+import 'package:todo_app/views/task/task_details.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
-  _HomeState createState() => _HomeState();
+  HomeState createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late ConfettiController _confettiController;
+
+  late final AnimationController _animationController =
+      AnimationController(duration: const Duration(seconds: 1), vsync: this)
+        ..repeat(reverse: true, period: const Duration(seconds: 1));
+
+  late final Animation<Offset> _offsetAnimation =
+      Tween<Offset>(begin: Offset.zero, end: const Offset(0.1, 0)).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeIn));
 
   @override
   void initState() {
@@ -25,6 +34,13 @@ class _HomeState extends State<Home> {
 
     _confettiController =
         ConfettiController(duration: const Duration(milliseconds: 300));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   Color getCardColor(MissionType missionType) {
@@ -46,12 +62,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    Widget header = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppText(text: "Level Up", textStyle: textTheme.displayLarge!)
-        ]);
+    Widget header =
+        const Image(width: 340, image: AssetImage('assets/logo.png'));
 
     Widget level = Consumer<AccountModel>(
         builder: (context, account, child) => Card.outlined(
@@ -126,46 +138,72 @@ class _HomeState extends State<Home> {
                       ]))
                 ]))));
 
-    Widget mission(MissionModel mission) => Card(
-        key: UniqueKey(),
-        surfaceTintColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8), // if you need this
-          side: BorderSide(
-            color: getCardColor(mission.missionType),
-            width: 1,
-          ),
-        ),
-        child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            child: Row(
-              children: [
-                MaxWidthBox(
-                    maxWidth: 200,
-                    child: AppText(
-                      text: mission.missionName,
-                      textStyle: textTheme.titleMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
-                      maxLines: 4,
-                    )),
-                const Spacer(),
-                Chip(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // if you need this
-                    side: const BorderSide(
-                      color: Colors.transparent,
-                      width: 1,
-                    ),
+    Widget mission(MissionModel mission, int index) => Material(
+        child: InkWell(
+            onTap: () {
+              Provider.of<MissionModel>(context, listen: false)
+                  .setMission(mission);
+              _animationController.stop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TaskDetails(index: index)),
+              );
+            },
+            onTapDown: (a) {
+              _animationController.animateBack(0);
+              //_animationController.stop();
+            },
+            onTapUp: (a) {
+              print("hi");
+              _animationController.repeat(reverse: true);
+              _animationController.reset();
+            },
+            child: Card(
+                key: UniqueKey(),
+                surfaceTintColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // if you need this
+                  side: BorderSide(
+                    color: getCardColor(mission.missionType),
+                    width: 1,
                   ),
-                  label: AppText(
-                      text: "+${mission.expierence} exp",
-                      textStyle: textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSecondary)),
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                )
-              ],
-            )));
+                ),
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: Row(
+                      children: [
+                        MaxWidthBox(
+                            maxWidth: 200,
+                            child: AppText(
+                              text: mission.missionName,
+                              textStyle: textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                              maxLines: 4,
+                            )),
+                        const Spacer(),
+                        Chip(
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // if you need this
+                            side: const BorderSide(
+                              color: Colors.transparent,
+                              width: 1,
+                            ),
+                          ),
+                          label: AppText(
+                              text: "+${mission.expierence} exp",
+                              textStyle: textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondary)),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                        )
+                      ],
+                    )))));
 
     Widget missions = Consumer<MissionsModel>(
         builder: (context, missions, child) => Column(
@@ -329,12 +367,19 @@ class _HomeState extends State<Home> {
                           onDismissed: (direction) {
                             if (direction == DismissDirection.startToEnd) {
                               Provider.of<AccountModel>(context, listen: false)
-                                  .gainExpierence(50, () {_confettiController.play();});
-                              missions.removeMissionAtIndex(index);
-
+                                  .gainExpierence(50, () {
+                                _confettiController.play();
+                              });
                             }
+                            _animationController.reset();
+                            _animationController.repeat(reverse: true);
+                            missions.removeMissionAtIndex(index);
                           },
-                          child: mission(currentMission),
+                          child: index == 0
+                              ? SlideTransition(
+                                  position: _offsetAnimation,
+                                  child: mission(currentMission, index))
+                              : mission(currentMission, index),
                         ),
                       ],
                     ],
@@ -363,6 +408,7 @@ class _HomeState extends State<Home> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 12),
                       child: Column(children: [
+                        const SizedBox(height: 24),
                         header,
                         const SizedBox(height: 24),
                         level,

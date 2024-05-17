@@ -1,9 +1,6 @@
-import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 class AccountModel extends ChangeNotifier {
-
-
   int _level = 0;
   double _expierenceCurrent = 0;
   double _expierenceTotal = 100;
@@ -31,8 +28,4 @@ class AccountModel extends ChangeNotifier {
 
     notifyListeners();
   }
-
-
-
-
 }

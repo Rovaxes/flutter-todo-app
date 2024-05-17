@@ -2,19 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:today_design_system/today_library.dart';
+import 'package:today_design_system/components/components.dart';
 import 'package:todo_app/components/app_text.dart';
+import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/providers/mission_model.dart';
 import 'package:todo_app/providers/missions_model.dart';
 
-class CreateTaskDetails extends StatefulWidget {
-  const CreateTaskDetails({super.key});
+class TaskDetails extends StatefulWidget {
+  final int index;
+  
+  const TaskDetails({super.key, required this.index});
 
   @override
-  CreateTaskDetailsState createState() => CreateTaskDetailsState();
+  TaskDetailsState createState() => TaskDetailsState();
 }
 
-class CreateTaskDetailsState extends State<CreateTaskDetails> {
+class TaskDetailsState extends State<TaskDetails> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    _nameController.text = Provider.of<MissionModel>(context, listen: false).missionName;
+    _descriptionController.text = Provider.of<MissionModel>(context, listen: false).missionDescription;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -24,13 +37,9 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppText(
-              text: "Mission Creation",
+              text: "Mission Details",
               textStyle: textTheme.displaySmall!
                   .copyWith(color: Theme.of(context).colorScheme.onTertiary)),
-          AppText(
-              text: "What is this mission about?",
-              textStyle: textTheme.bodyMedium!
-                  .copyWith(color: Theme.of(context).colorScheme.onTertiary))
         ]);
 
     Widget missionTitleForm = Consumer<MissionModel>(
@@ -38,10 +47,11 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
             child: Column(children: [
               AppText(
-                  text: "What should we call this mission?",
+                  text: "Mission Name",
                   textStyle: textTheme.bodyMedium!.copyWith()),
               const SizedBox(height: 8),
               TextField(
+                controller: _nameController,
                 style: textTheme.bodyMedium!.copyWith(),
                 decoration: InputDecoration(
                     border: const OutlineInputBorder(),
@@ -57,10 +67,11 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
             child: Column(children: [
               AppText(
-                  text: "What are the details of this mission?",
+                  text: "Mission description",
                   textStyle: textTheme.bodyMedium!.copyWith()),
               const SizedBox(height: 8),
               TextField(
+                controller: _descriptionController,
                 style: textTheme.bodyMedium!.copyWith(),
                 maxLines: 6,
                 decoration: InputDecoration(
@@ -77,8 +88,7 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
     Widget missionRewardsSelection = Consumer<MissionModel>(
         builder: (context, mission, child) => Column(children: [
               AppText(
-                  text: "How much expierence is this mission worth?",
-                  textStyle: textTheme.bodyMedium!),
+                  text: "Mission expierence", textStyle: textTheme.bodyMedium!),
               const SizedBox(height: 8),
               Row(children: [
                 Expanded(
@@ -173,6 +183,102 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
               ])
             ]));
 
+    Widget missionTypeSelection = Consumer<MissionModel>(
+        builder: (context, mission, child) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+              child: Column(children: [
+                AppText(text: "Mission type", textStyle: textTheme.bodyMedium!),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(children: [
+                  Expanded(
+                      child: Wrap(
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: [
+                      FilterChip(
+                        label: AppText(
+                            text: "Daily",
+                            textStyle: textTheme.bodyMedium!.copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onTertiary)),
+                        selected: mission.missionType == MissionType.daily,
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                        selectedColor: AppColors.daily,
+                        onSelected: (value) {
+                          if (value) {
+                            mission.updateMissionType(MissionType.daily);
+                          }
+                        },
+                        iconTheme: null,
+                        showCheckmark: false,
+                      ),
+                      FilterChip(
+                        label: AppText(
+                            text: "Weekly",
+                            textStyle: textTheme.bodyMedium!.copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onTertiary)),
+                        selectedColor: AppColors.weekly,
+                        selected: mission.missionType == MissionType.weekly,
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                        onSelected: (value) {
+                          if (value) {
+                            mission.updateMissionType(MissionType.weekly);
+                          }
+                        },
+                        iconTheme: null,
+                        showCheckmark: false,
+                      ),
+                      FilterChip(
+                          label: AppText(
+                              text: "Monthly",
+                              textStyle: textTheme.bodyMedium!.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiary)),
+                          selected: mission.missionType == MissionType.monthly,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary,
+                          selectedColor: AppColors.monthly,
+                          onSelected: (value) {
+                            if (value) {
+                              mission.updateMissionType(MissionType.monthly);
+                            }
+                          },
+                          showCheckmark: false),
+                      FilterChip(
+                          label: AppText(
+                              text: "Regular",
+                              textStyle: textTheme.bodyMedium!.copyWith(
+                                  color:
+                                      mission.missionType == MissionType.regular
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onSecondaryContainer
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onTertiary)),
+                          selected: mission.missionType == MissionType.regular,
+                          selectedColor: AppColors.regular,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary,
+                          onSelected: (value) {
+                            if (value) {
+                              mission.updateMissionType(MissionType.regular);
+                            }
+                          },
+                          showCheckmark: false)
+                    ],
+                  ))
+                ])
+              ]),
+            ));
+
     Widget action = Consumer2<MissionsModel, MissionModel>(
         builder: (context, missions, mission, child) => FilledButton(
               style: ButtonStyle(
@@ -198,22 +304,56 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
                       mission.expierence <= 0
                   ? null
                   : () {
+                    missions.removeMissionAtIndex(widget.index);
                       missions.addMission(MissionModel(
                           missionName: mission.missionName,
                           missionCategory: MissionCategory.other,
                           missionDescription: mission.missionDescription,
                           missionType: mission.missionType,
                           expierence: mission.expierence));
-                      GoRouter.of(context).pushReplacementNamed('home');
+                      Navigator.of(context).pop();
                       SchedulerBinding.instance.addPostFrameCallback((_) {
-                        TodayToast.success(title: "Mission Created")
-                            .show(context);
+                        TodayToast.success(title: "Mission Updated").show(context);
                       });
                     },
               child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: AppText(
-                      text: "Create Mission",
+                      text: "Update Mission",
+                      textStyle: textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onTertiary))),
+            ));
+
+    Widget delete = Consumer2<MissionsModel, MissionModel>(
+        builder: (context, missions, mission, child) => FilledButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      return Theme.of(context)
+                          .colorScheme
+                          .error
+                          .withOpacity(1); // Use the component's default.
+                    },
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ))),
+              onPressed: mission.missionType == MissionType.none ||
+                      mission.missionName.isEmpty ||
+                      mission.expierence <= 0
+                  ? null
+                  : () {
+                    missions.removeMissionAtIndex(widget.index);
+                      Navigator.of(context).pop();
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        TodayToast.success(title: "Mission Deleted").show(context);
+                      });
+                    },
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: AppText(
+                      text: "Delete",
                       textStyle: textTheme.bodyMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onTertiary))),
             ));
@@ -229,15 +369,14 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
                   children: [
                     FloatingActionButton(
                       onPressed: () {
-                        GoRouter.of(context)
-                            .pushReplacementNamed('create-task');
+                        GoRouter.of(context).pushReplacementNamed('home');
                       },
                       tooltip: 'Go Back',
                       child: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     const SizedBox(height: 24),
                     header,
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 12),
                     Card.outlined(
                         child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -252,8 +391,20 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
                               ]),
                               const SizedBox(height: 12),
                             ]))),
-                    const SizedBox(height: 24),
-                    Row(children: [Expanded(child: action)]),
+                    Card.outlined(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 2),
+                            child: 
+                              missionTypeSelection
+                            )),
+                    const SizedBox(height: 12),
+                    Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: 
+                    Row(children: [
+                      Expanded(child: delete),
+                      const SizedBox(width: 8),
+                      Expanded(child: action)
+                    ]),)
                   ],
                 ))));
   }

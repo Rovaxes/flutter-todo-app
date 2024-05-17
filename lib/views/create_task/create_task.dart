@@ -9,16 +9,18 @@ class CreateTask extends StatefulWidget {
   const CreateTask({super.key});
 
   @override
-  _CreateTaskState createState() => _CreateTaskState();
+  CreateTaskState createState() => CreateTaskState();
 }
 
-class _CreateTaskState extends State<CreateTask> {
+class CreateTaskState extends State<CreateTask> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Provider.of<MissionModel>(context, listen: false)
-        .updateMissionType(MissionType.none);
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<MissionModel>(context, listen: false)
+          .updateMissionType(MissionType.none);
+    });
   }
 
   Color getCardColor(MissionType missionType) {
@@ -160,9 +162,8 @@ class _CreateTaskState extends State<CreateTask> {
 
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
-        body: Container(
-            child: Center(
-                child: Column(
+        body: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -180,6 +181,6 @@ class _CreateTaskState extends State<CreateTask> {
             const SizedBox(height: 12),
             action
           ],
-        ))));
+        )));
   }
 }

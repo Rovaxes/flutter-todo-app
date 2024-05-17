@@ -49,6 +49,13 @@ final GoRouter _router = GoRouter(
             return const CreateTaskDetails();
           },
         ),
+        GoRoute(
+          name: 'task-details',
+          path: 'task',
+          builder: (BuildContext context, GoRouterState state) {
+            return const CreateTaskDetails();
+          },
+        ),
       ],
     ),
   ],

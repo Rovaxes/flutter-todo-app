@@ -31,6 +31,14 @@ class MissionModel extends ChangeNotifier {
     _expierence = expierence;
   }
 
+  void setMission(MissionModel mission) {
+    _missionName = mission.missionName;
+    _missionDescription = mission.missionDescription;
+    _missionType = mission.missionType;
+    _missionCategory = mission.missionCategory;
+    _expierence = mission.expierence;
+  }
+
   void updateMissionType(MissionType type) {
     _missionType = type;
     notifyListeners();

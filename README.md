@@ -1,25 +1,21 @@
-# todo_app
+# Level Up
 
-A new Flutter project.
+This is a variation of the classic todo application and POC to explore providers. 
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Features:
+- Earn EXP to level up
+- Create Tasks
+- Update Tasks
+- Delete Tasks
+- Filter Tasks
 
 ## Releasing
 
+Run the below commands
+
 flutter clean
 flutter pub get
-
 flutter build web --release --base-href /flutter-todo-app/
-
 cd build/web
+
+Once completed create a release branch and delploy it via github pages

@@ -386,7 +386,7 @@ class TaskDetailsState extends State<TaskDetails> {
                   children: [
                     FloatingActionButton(
                       onPressed: () {
-                        GoRouter.of(context).pushReplacementNamed('home');
+                        Navigator.pop(context);
                       },
                       tooltip: 'Go Back',
                       child: const Icon(Icons.arrow_back_ios_rounded),

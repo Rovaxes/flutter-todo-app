@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:today_design_system/components/components.dart';
 import 'package:todo_app/components/app_text.dart';
 import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/providers/mission_model.dart';
@@ -10,7 +10,7 @@ import 'package:todo_app/providers/missions_model.dart';
 
 class TaskDetails extends StatefulWidget {
   final int index;
-  
+
   const TaskDetails({super.key, required this.index});
 
   @override
@@ -23,8 +23,10 @@ class TaskDetailsState extends State<TaskDetails> {
 
   @override
   void initState() {
-    _nameController.text = Provider.of<MissionModel>(context, listen: false).missionName;
-    _descriptionController.text = Provider.of<MissionModel>(context, listen: false).missionDescription;
+    _nameController.text =
+        Provider.of<MissionModel>(context, listen: false).missionName;
+    _descriptionController.text =
+        Provider.of<MissionModel>(context, listen: false).missionDescription;
     super.initState();
   }
 
@@ -304,7 +306,7 @@ class TaskDetailsState extends State<TaskDetails> {
                       mission.expierence <= 0
                   ? null
                   : () {
-                    missions.removeMissionAtIndex(widget.index);
+                      missions.removeMissionAtIndex(widget.index);
                       missions.addMission(MissionModel(
                           missionName: mission.missionName,
                           missionCategory: MissionCategory.other,
@@ -313,7 +315,15 @@ class TaskDetailsState extends State<TaskDetails> {
                           expierence: mission.expierence));
                       Navigator.of(context).pop();
                       SchedulerBinding.instance.addPostFrameCallback((_) {
-                        TodayToast.success(title: "Mission Updated").show(context);
+                        Fluttertoast.showToast(
+                            msg: "Mission Updated",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontAsset: "Segoe UI",
+                            fontSize: 16.0);
                       });
                     },
               child: Padding(
@@ -344,10 +354,17 @@ class TaskDetailsState extends State<TaskDetails> {
                       mission.expierence <= 0
                   ? null
                   : () {
-                    missions.removeMissionAtIndex(widget.index);
+                      missions.removeMissionAtIndex(widget.index);
                       Navigator.of(context).pop();
                       SchedulerBinding.instance.addPostFrameCallback((_) {
-                        TodayToast.success(title: "Mission Deleted").show(context);
+                        Fluttertoast.showToast(
+                            msg: "Mission Deleted",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
                       });
                     },
               child: Padding(
@@ -395,16 +412,16 @@ class TaskDetailsState extends State<TaskDetails> {
                         child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 2, horizontal: 2),
-                            child: 
-                              missionTypeSelection
-                            )),
+                            child: missionTypeSelection)),
                     const SizedBox(height: 12),
-                    Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: 
-                    Row(children: [
-                      Expanded(child: delete),
-                      const SizedBox(width: 8),
-                      Expanded(child: action)
-                    ]),)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(children: [
+                        Expanded(child: delete),
+                        const SizedBox(width: 8),
+                        Expanded(child: action)
+                      ]),
+                    )
                   ],
                 ))));
   }

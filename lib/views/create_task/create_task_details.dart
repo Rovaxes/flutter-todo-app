@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:today_design_system/today_library.dart';
 import 'package:todo_app/components/app_text.dart';
 import 'package:todo_app/providers/mission_model.dart';
 import 'package:todo_app/providers/missions_model.dart';
@@ -206,8 +206,14 @@ class CreateTaskDetailsState extends State<CreateTaskDetails> {
                           expierence: mission.expierence));
                       GoRouter.of(context).pushReplacementNamed('home');
                       SchedulerBinding.instance.addPostFrameCallback((_) {
-                        TodayToast.success(title: "Mission Created")
-                            .show(context);
+                        Fluttertoast.showToast(
+                            msg: "Mission Created",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
                       });
                     },
               child: Padding(
